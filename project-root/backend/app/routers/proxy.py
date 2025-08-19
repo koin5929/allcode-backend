@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends
 from datetime import datetime, timedelta
 from ..schemas import ProxyLeaseOut
@@ -7,11 +8,19 @@ router = APIRouter(prefix="/proxy", tags=["proxy"])
 
 @router.post("/lease", response_model=ProxyLeaseOut)
 def lease_proxy(user = Depends(get_current_user)):
-    # 실제 구현에서는 공급자 API 호출 및 헬스/스코어링 적용
+    # Render 환경변수에서 DataImpulse 값 불러오기
+    proxy_host = os.getenv("PROXY_HOST", "gw.dataimpulse.com")
+    proxy_port = int(os.getenv("PROXY_PORT", "823"))
+    proxy_user = os.getenv("PROXY_USERNAME")
+    proxy_pass = os.getenv("PROXY_PASSWORD")
+
+    # 인증 문자열 조합
+    auth = f"{proxy_user}:{proxy_pass}" if proxy_user and proxy_pass else None
+
     return ProxyLeaseOut(
-        ip="127.0.0.1",
-        port=8080,
-        auth=None,
+        ip=proxy_host,
+        port=proxy_port,
+        auth=auth,
         sticky_key=None,
         expires_at=datetime.utcnow() + timedelta(minutes=10),
     )
