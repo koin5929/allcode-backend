@@ -1,15 +1,16 @@
 # app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-3from .settings import settings
-6from .database import Base, engine, SessionLocal
+from .settings import settings
+from .database import Base, engine, SessionLocal
 from .routers import auth as auth_router
 from .routers import health as health_router
-4from .routers import keywords as keywords_router
+from .routers import keywords as keywords_router
 from .routers import visited as visited_router
-5from .routers import proxy as proxy_router
+from .routers import proxy as proxy_router
 
 # 초기 개발 편의를 위해 자동 생성 (운영에선 Alembic 권장)
+# 건들면 안되기 때문에 체크 O ㅇㅇ
 Base.metadata.create_all(bind=engine)
 
 # === 여기부터: 최초 관리자 부트스트랩 ===
@@ -70,6 +71,7 @@ app.include_router(proxy_router.router)
 @app.get("/")
 def root():
     return {"name": settings.APP_NAME, "env": settings.ENV}
+
 
 
 
