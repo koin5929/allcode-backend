@@ -15,8 +15,8 @@ Base.metadata.create_all(bind=engine)
 
 # === 여기부터: 최초 관리자 부트스트랩 ===
 import os
-3from .models import User
-4from .security import hash_password
+from .models import User
+from .security import hash_password
 
 def _maybe_bootstrap_admin():
     """
@@ -71,6 +71,7 @@ app.include_router(proxy_router.router)
 @app.get("/")
 def root():
     return {"name": settings.APP_NAME, "env": settings.ENV}
+
 
 
 
